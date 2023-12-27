@@ -9,6 +9,8 @@ body{
     justify-content: center;
     font-family: sans-serif;
     background: linear-gradient(45deg, #373505, #530219);
+    height: 100%;
+    overflow: hidden;
 }
 
 .wrapper{
