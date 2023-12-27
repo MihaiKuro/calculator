@@ -5,57 +5,54 @@ let screenValue = '';
 let previousOperator = '';
 let previousValue = '';
 
-function buttonClick(value) {
-    if (isNaN(value)) {
-        handleSymbol(value);
-    } else {
-        handleNumber(value);
-    }
-}
-foreach(button => {
-    button.addEventListener('click', () => buttonClick(button.value));
-    
-    
-});
-function updateScreen(value) {
-    screenValue = value;
-    screen.textContent = value;
-}
+buttons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        const buttonText = e.target.innerText;
+        if(buttonText <= 9 && buttonText >= 0){
+            screenValue += buttonText;
+            screen.innerText = screenValue;
+        } else if (buttonText === 'C' || buttonText === 'AC'){
+            screenValue = '';
+            screen.innerText = screenValue;
+        } else if (buttonText === '+/-'){
+            screenValue = -screenValue;
+            screen.innerText = screenValue;
+        } else if (buttonText === '%'){
+            screenValue = screenValue / 100;
+            screen.innerText = screenValue;
+        } else if (buttonText === '+' || buttonText === '-' || buttonText === 'x' || buttonText === '÷'){
+            previousOperator = buttonText;
+            previousValue = screenValue;
+            screenValue = '';
+            
+        } else if (buttonText === '='){
+            screenValue = calculate(previousValue, screenValue, previousOperator);
+            screen.innerText = screenValue;
+        } else if (buttonText === '.'){
+            if(!screenValue.includes('.')){
+                screenValue += '.';
+                screen.innerText = screenValue;
+            }
+        }
+    });});
 
-function handleNumber(value) {
-    screenValue += value;
-    updateScreen(screenValue);
-}
-
-function handleSymbol(value) {
-    if (previousOperator) {
-        handleCalculation();
-    }
-    previousOperator = value;
-    previousValue = screenValue;
-    screenValue = '';
-}
-
-function handleCalculation(value) {
-    const currentValue = parseFloat(screenValue);
-    const valueToUse = parseFloat(previousValue);
-
+function calculate(previousValue, screenValue, previousOperator){
+    let result = '';
     switch (previousOperator) {
         case '+':
-            screenValue = valueToUse + currentValue;
-            break;
+        result = parseFloat(previousValue) + parseFloat(screenValue);
+        break;
         case '-':
-            screenValue = valueToUse - currentValue;
-            break;
-        case '*':
-            screenValue = valueToUse * currentValue;
-            break;
-        case '/':
-            screenValue = valueToUse / currentValue;
-            break;
+        result = parseFloat(previousValue) - parseFloat(screenValue);
+        break;
+        case 'x':
+        result = parseFloat(previousValue) * parseFloat(screenValue);
+        break;
+        case '÷':
+        result = parseFloat(previousValue) / parseFloat(screenValue);
+        break;
         default:
-            return;
+        break;
     }
-    previousOperator = '';
-    updateScreen(screenValue);
+    return result;
 }
